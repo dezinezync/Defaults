@@ -1,5 +1,5 @@
 import Foundation
-import SwiftUI
+//import SwiftUI
 #if os(macOS)
 import AppKit
 #else
@@ -369,66 +369,66 @@ extension Defaults {
 	}
 }
 
-extension Defaults {
-	/**
-	The bridge which is responsible for `SwiftUI.Color` serialization and deserialization.
-
-	It is unsafe to convert `SwiftUI.Color` to `UIColor` and use `UIColor.bridge` to serialize it, because `UIColor` does not hold a color space, but `Swift.Color` does (which means color space might get lost in the conversion). The bridge will always try to preserve the color space whenever `Color#cgColor` exists. Only when `Color#cgColor` is `nil`, will it use `UIColor.bridge` to do the serialization and deserialization.
-	*/
-	@available(iOS 15.0, macOS 11.0, tvOS 15.0, watchOS 8.0, iOSApplicationExtension 15.0, macOSApplicationExtension 11.0, tvOSApplicationExtension 15.0, watchOSApplicationExtension 8.0, *)
-	public struct ColorBridge: Bridge {
-		public typealias Value = Color
-		public typealias Serializable = Any
-
-		#if os(macOS)
-		private typealias NativeColor = NSColor
-		#else
-		private typealias NativeColor = UIColor
-		#endif
-
-		public func serialize(_ value: Value?) -> Serializable? {
-			guard let value else {
-				return nil
-			}
-
-			guard
-				let cgColor = value.cgColor,
-				let colorSpace = cgColor.colorSpace?.name as? String,
-				let components = cgColor.components
-			else {
-				return NativeColor.bridge.serialize(NativeColor(value))
-			}
-
-			return [colorSpace, components]
-		}
-
-		public func deserialize(_ object: Serializable?) -> Value? {
-			if let object = object as? NativeColor.Serializable {
-				guard let nativeColor = NativeColor.bridge.deserialize(object) else {
-					return nil
-				}
-
-				return Value(nativeColor)
-			}
-
-			guard
-				let object = object as? [Any],
-				let rawColorspace = object[0] as? String,
-				let colorspace = CGColorSpace(name: rawColorspace as CFString),
-				let components = object[1] as? [CGFloat],
-				let cgColor = CGColor(colorSpace: colorspace, components: components)
-			else {
-				return nil
-			}
-
-			if #available(macOS 12.0, macOSApplicationExtension 12.0, *) {
-				return Value(cgColor: cgColor)
-			} else {
-				return Value(cgColor)
-			}
-		}
-	}
-}
+//extension Defaults {
+//	/**
+//	The bridge which is responsible for `SwiftUI.Color` serialization and deserialization.
+//
+//	It is unsafe to convert `SwiftUI.Color` to `UIColor` and use `UIColor.bridge` to serialize it, because `UIColor` does not hold a color space, but `Swift.Color` does (which means color space might get lost in the conversion). The bridge will always try to preserve the color space whenever `Color#cgColor` exists. Only when `Color#cgColor` is `nil`, will it use `UIColor.bridge` to do the serialization and deserialization.
+//	*/
+//	@available(iOS 15.0, macOS 11.0, tvOS 15.0, watchOS 8.0, iOSApplicationExtension 15.0, macOSApplicationExtension 11.0, tvOSApplicationExtension 15.0, watchOSApplicationExtension 8.0, *)
+//	public struct ColorBridge: Bridge {
+//		public typealias Value = Color
+//		public typealias Serializable = Any
+//
+//		#if os(macOS)
+//		private typealias NativeColor = NSColor
+//		#else
+//		private typealias NativeColor = UIColor
+//		#endif
+//
+//		public func serialize(_ value: Value?) -> Serializable? {
+//			guard let value else {
+//				return nil
+//			}
+//
+//			guard
+//				let cgColor = value.cgColor,
+//				let colorSpace = cgColor.colorSpace?.name as? String,
+//				let components = cgColor.components
+//			else {
+//				return NativeColor.bridge.serialize(NativeColor(value))
+//			}
+//
+//			return [colorSpace, components]
+//		}
+//
+//		public func deserialize(_ object: Serializable?) -> Value? {
+//			if let object = object as? NativeColor.Serializable {
+//				guard let nativeColor = NativeColor.bridge.deserialize(object) else {
+//					return nil
+//				}
+//
+//				return Value(nativeColor)
+//			}
+//
+//			guard
+//				let object = object as? [Any],
+//				let rawColorspace = object[0] as? String,
+//				let colorspace = CGColorSpace(name: rawColorspace as CFString),
+//				let components = object[1] as? [CGFloat],
+//				let cgColor = CGColor(colorSpace: colorspace, components: components)
+//			else {
+//				return nil
+//			}
+//
+//			if #available(macOS 12.0, macOSApplicationExtension 12.0, *) {
+//				return Value(cgColor: cgColor)
+//			} else {
+//				return Value(cgColor)
+//			}
+//		}
+//	}
+//}
 
 extension Defaults {
 	public struct AnyBridge: Defaults.Bridge {

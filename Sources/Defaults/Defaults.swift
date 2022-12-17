@@ -36,7 +36,7 @@ public enum Defaults {
 }
 
 public typealias _Defaults = Defaults
-public typealias _Default = Default
+//public typealias _Default = Default
 
 extension Defaults {
 	// We cannot use `Key` as the container for keys because of "Static stored properties not supported in generic types".
